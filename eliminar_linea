@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# Elimina una linea de un archivo de texto. Especial para cuando
+# entras por SSH a una maquina con IP duplicado y te hincha las bolas
+# el known_hosts
+
+EJECUTABLE=$0
+LINEA=$2
+ARCHIVO=$1
+
+function usage()
+{
+	echo "Uso: $EJECUTABLE archivo linea"
+	exit
+}
+
+if [ "$ARCHIVO" = "" ]; then
+	usage
+fi
+
+if [ "$LINEA" = "" ]; then
+	if [[ "$ARCHIVO" == *":"* ]]; then
+		TMP=$ARCHIVO
+		ARCHIVO=$(echo $ARCHIVO | cut -d: -f1)
+		LINEA=$(echo $TMP | cut -d: -f2)
+	else
+		usage
+	fi
+fi
+
+sed -i "$LINEA d" $ARCHIVO
+echo Linea $LINEA del archivo $ARCHIVO eliminado.
+
